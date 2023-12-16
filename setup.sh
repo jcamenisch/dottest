@@ -14,7 +14,7 @@ perform_install() {
 
 ensure_installed () {
   echo -n 'Checking for `'$1'` executable...'
-  if is_executable $1; then
+  if is_executable $1 || brew list $1 2>&1 > /dev/null; then
     echo 'already installed'
   else
     # TODO: Handle failure
@@ -23,7 +23,42 @@ ensure_installed () {
   fi
 }
 
-# Install testing tool
+ensure_brew_tap() {
+  echo -n 'Checking for brew tap `'$1'`...'
+  if brew tap | grep -q $1; then
+    echo 'already present'
+  else
+    brew tap $1
+  fi
+}
+
+ensure_symlink() {
+  echo -n 'Checking for symlink `'$1'`...'
+  if [ -L $1 ]; then
+    echo 'already present'
+  else
+    target=$(readlink -f $2)
+    echo "setting to $target"
+    ln -s $target $1
+  fi
+}
+
+# Install coredns
+# See https://coredns.io/
+ensure_installed coredns
+
+#=======================#
+# Install testing tools #
+#=======================#
+
 # See https://github.com/bats-core/bats-core
 # TODO: Manage version using asdf or Docker
+ensure_brew_tap kaos/shell
 ensure_installed bats-core
+ensure_installed bats-support
+ensure_installed bats-assert
+
+ensure_installed dig
+
+ensure_symlink test_helpers/bats-support $(brew --prefix bats-support)
+ensure_symlink test_helpers/bats-assert $(brew --prefix bats-assert)

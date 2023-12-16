@@ -1,15 +1,22 @@
 #!/usr/bin/env bats
 
-setup() {
-  ./coredns -dns.port=1053 2>&1 > /dev/null &
+bats_require_minimum_version 1.10.0
+
+setup_file() {
+  coredns -dns.port=1053 2>&1 > /dev/null &
   pid1=$!
   echo "coredns running on $pid1"
   sleep 1
 }
 
-teardown() {
+teardown_file() {
   echo "killing coredns process $pid1"
   kill $pid1
+}
+
+setup() {
+  load 'test_helpers/bats-support/lib/bats-support/load'
+  load 'test_helpers/bats-assert/lib/bats-assert/load'
 }
 
 expect_line() {
@@ -17,8 +24,8 @@ expect_line() {
 }
 
 @test "Default response should be REFUSED" {
-  output="$(dig @localhost -p 1053 google.com)"
+  run dig @localhost -p 1053 google.com
 
-  expect_line "$output" '^;; ->>HEADER<<- opcode: QUERY, status: REFUSED, id:'
-  expect_line "$output" '^;; flags: qr aa rd; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL:'
+  assert_line --partial ';; ->>HEADER<<- opcode: QUERY, status: REFUSED, id:'
+  assert_line --partial ';; flags: qr aa rd; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL:'
 }
