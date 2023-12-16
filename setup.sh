@@ -6,6 +6,9 @@ is_executable () {
 
 perform_install() {
   echo "Installing $1..."
+  # TODO:
+  #  - Check for presence of brew
+  #  - Possibly support alternative package managers
   brew install $1
 }
 
@@ -14,6 +17,8 @@ ensure_installed () {
   if is_executable $1; then
     echo 'already installed'
   else
+    # TODO: Handle failure
+    #  - Idea: take a second argument with instructions on how to install manually
     perform_install $1
   fi
 }
