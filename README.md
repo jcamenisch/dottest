@@ -1,9 +1,9 @@
 Developer Setup
 ---------------
 
-Run `setup.sh`
+Run `./setup.sh`
 
 Running tests
 -------------
 
-TODO
+Run `./test`

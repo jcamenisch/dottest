@@ -24,7 +24,6 @@ ensure_installed () {
 }
 
 # Install testing tool
-# See https://empty.sourceforge.net/
-# TODO:
-# Check if empty is already installed
-ensure_installed empty
+# See https://github.com/bats-core/bats-core
+# TODO: Manage version using asdf or Docker
+ensure_installed bats-core

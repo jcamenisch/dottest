@@ -1,0 +1,24 @@
+#!/usr/bin/env bats
+
+setup() {
+  ./coredns -dns.port=1053 2>&1 > /dev/null &
+  pid1=$!
+  echo "coredns running on $pid1"
+  sleep 1
+}
+
+teardown() {
+  echo "killing coredns process $pid1"
+  kill $pid1
+}
+
+expect_line() {
+  echo "$1" | grep -q "$2"
+}
+
+@test "Default response should be REFUSED" {
+  output="$(dig @localhost -p 1053 google.com)"
+
+  expect_line "$output" '^;; ->>HEADER<<- opcode: QUERY, status: REFUSED, id:'
+  expect_line "$output" '^;; flags: qr aa rd; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL:'
+}
