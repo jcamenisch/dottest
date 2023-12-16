@@ -23,9 +23,16 @@ expect_line() {
   echo "$1" | grep -q "$2"
 }
 
-@test "Default response should be REFUSED" {
+@test "Default response should be non-authoritative REFUSED with no AUTHORITY" {
   run dig @localhost -p 1053 google.com
 
   assert_line --partial ';; ->>HEADER<<- opcode: QUERY, status: REFUSED, id:'
-  assert_line --partial ';; flags: qr aa rd; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL:'
+  assert_line --partial ';; flags: qr rd; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL:'
+}
+
+@test "Default response under *.test should be NXDOMAIN with AUTHORITY" {
+  run dig @localhost -p 1053 any.old.thing.test
+
+  assert_line --partial ';; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id:'
+  assert_line --partial ';; flags: qr aa rd; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL:'
 }

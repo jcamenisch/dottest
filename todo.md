@@ -1,13 +1,15 @@
 Test Cases
 ==========
-- [ ] It has a test harness that will run the service with parameters and check it from the outside
+- [x] It has a test harness that will run the service with parameters and check it from the outside
 - [ ] Full test suite can be set up to run on any* fresh machine with a ~single command.
-  - [ ] At least for Mac, Windows, or Linux in that order
-  - [ ] Or alternatively in a free/cheap remote environment of some sort
+  - [x] Mac
+  - [ ] Linux
+  - [ ] Windows/WSL
+  - [ ] In a free/cheap remote environment of some sort
 - [ ] Test harness can run multiple instances of the service with different parameters to compare their output
 
-- [ ] It answers arbitrary queries to *.test with an NXDOMAIN response.
-- [ ] It answers arbitrary queries to *.* with a REFUSED response.
+- [x] It answers arbitrary queries to *.test with an NXDOMAIN response.
+- [x] It answers arbitrary queries to *.* with a REFUSED response.
 - [ ] It answers queries to <n>.random.test with an A record pointing to a valid IP address.
   - [ ] Always under the same class C
   - [ ] Always matches the IP returned for 0.<n>.random.test
